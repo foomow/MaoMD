@@ -1,2 +1,2 @@
 # MaoMD
-Generator of GitHub Flavored Markdown documentation for .net projects.
+Generator of GitHub Flavored Markdown documentation for c# projects.
