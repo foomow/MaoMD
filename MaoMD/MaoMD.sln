@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29230.47
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maomd", "maomd\maomd.csproj", "{833BF6A8-BD1C-4EAD-A857-0DBFF0829197}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "maomdlib", "maomdlib\maomdlib.csproj", "{F6C56A57-7189-4AD8-8F43-C3C632930A68}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{833BF6A8-BD1C-4EAD-A857-0DBFF0829197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{833BF6A8-BD1C-4EAD-A857-0DBFF0829197}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{833BF6A8-BD1C-4EAD-A857-0DBFF0829197}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{833BF6A8-BD1C-4EAD-A857-0DBFF0829197}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6C56A57-7189-4AD8-8F43-C3C632930A68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6C56A57-7189-4AD8-8F43-C3C632930A68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6C56A57-7189-4AD8-8F43-C3C632930A68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6C56A57-7189-4AD8-8F43-C3C632930A68}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E679B4E8-1B72-428D-883B-1236631DFB3B}
+	EndGlobalSection
+EndGlobal
