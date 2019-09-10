@@ -1,0 +1,258 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Demo</name>
+    </assembly>
+    <members>
+        <member name="T:Demo.Author">
+            <summary>
+            a attribute
+            </summary>
+        </member>
+        <member name="F:Demo.Author.name">
+            <summary>
+            the name of author
+            </summary>
+        </member>
+        <member name="F:Demo.Author.version">
+            <summary>
+            version
+            </summary>
+        </member>
+        <member name="M:Demo.Author.#ctor(System.String)">
+            <summary>
+            author constructor
+            </summary>
+            <param name="name">input name</param>
+        </member>
+        <member name="T:Demo.DemoClass">
+            <summary>
+            Demo Class
+            </summary>
+        </member>
+        <member name="M:Demo.DemoClass.#ctor(System.Int32)">
+            <summary>
+            constructor
+            </summary>
+            <param name="id">id 初始化值</param>
+        </member>
+        <member name="P:Demo.DemoClass.Id">
+            <summary>
+            property Id
+            </summary>
+        </member>
+        <member name="T:Demo.WeekDay">
+            <summary>
+            an enum type
+            </summary>
+        </member>
+        <member name="F:Demo.WeekDay.Sun">
+            <summary>
+            sunday
+            </summary>
+        </member>
+        <member name="F:Demo.WeekDay.Mon">
+            <summary>
+            monday
+            </summary>
+        </member>
+        <member name="F:Demo.WeekDay.Tue">
+            <summary>
+            tuesday
+            </summary>
+        </member>
+        <member name="F:Demo.WeekDay.Wed">
+            <summary>
+            wedensday
+            </summary>
+        </member>
+        <member name="F:Demo.WeekDay.Thu">
+            <summary>
+            thurseday
+            </summary>
+        </member>
+        <member name="F:Demo.WeekDay.Fri">
+            <summary>
+            friday
+            </summary>
+        </member>
+        <member name="F:Demo.WeekDay.Sat">
+            <summary>
+            saturday
+            </summary>
+        </member>
+        <member name="T:Demo.NewClass">
+            <summary>
+            a new class,
+            we use it to test
+            how to make this 
+            </summary>
+            <remarks>
+            this is remarks content
+            </remarks>
+            <seealso cref="T:Demo.DemoClass"/>
+            <seealso cref="T:Demo.subns.ImpClass"/>
+        </member>
+        <member name="F:Demo.NewClass._id">
+            <summary>
+            a field
+            </summary>
+        </member>
+        <member name="M:Demo.NewClass.#ctor(System.Int32)">
+            <summary>
+            constructor
+            </summary>
+            <param name="id">input id</param>
+        </member>
+        <member name="P:Demo.NewClass.Id">
+            <summary>
+            a property
+            </summary>
+        </member>
+        <member name="T:Demo.Date">
+            <summary>
+            a struct
+            </summary>    
+        </member>
+        <member name="F:Demo.Date.year">
+            <summary>
+            year
+            </summary>
+        </member>
+        <member name="F:Demo.Date.month">
+            <summary>
+            month
+            </summary>
+        </member>
+        <member name="F:Demo.Date.day">
+            <summary>
+            day
+            </summary>
+        </member>
+        <member name="T:Demo.subns.SubClass">
+            <summary>
+            Class within sub namespace
+            </summary>
+        </member>
+        <member name="F:Demo.subns.SubClass.id">
+            <summary>
+            an id private field member
+            </summary>
+        </member>
+        <member name="P:Demo.subns.SubClass.Id">
+            <summary>
+            an Id property member
+            </summary>
+        </member>
+        <member name="T:Demo.subns.SubClass.nestedclass">
+            <summary>
+            a nested class
+            </summary>
+        </member>
+        <member name="F:Demo.subns.SubClass.nestedclass.name">
+            <summary>
+            some name
+            </summary>
+        </member>
+        <member name="T:Demo.subns.ImpClass">
+            <summary>
+            a class implements an interface
+            </summary>
+        </member>
+        <member name="P:Demo.subns.ImpClass.comment">
+            <summary>
+            内容
+            </summary>
+        </member>
+        <member name="T:Demo.subns.subsubns.IDemo">
+            <summary>
+            a demo interface
+            </summary>
+        </member>
+        <member name="P:Demo.subns.subsubns.IDemo.comment">
+            <summary>
+            some property
+            </summary>
+        </member>
+        <member name="T:Demo.subns.TestClass">
+            <summary>
+            test class
+            </summary>
+        </member>
+        <member name="F:Demo.subns.TestClass._name">
+            <summary>
+            a private field
+            </summary>
+        </member>
+        <member name="P:Demo.subns.TestClass.Name">
+            <summary>
+            a property
+            </summary>
+        </member>
+        <member name="M:Demo.subns.TestClass.TestMethod">
+            <summary>
+            test method in test class
+            </summary>
+            <returns>an interger value</returns>
+        </member>
+        <member name="T:Demo.subns.TestStruct">
+            <summary>
+            a test value type
+            </summary>
+        </member>
+        <member name="F:Demo.subns.TestStruct.x">
+            <summary>
+            member x
+            </summary>
+        </member>
+        <member name="F:Demo.subns.TestStruct.y">
+            <summary>
+            member y
+            </summary>
+        </member>
+        <member name="T:Demo.TestA">
+            <summary>
+            TestA
+            </summary>
+        </member>
+        <member name="M:Demo.TestA.#ctor(System.Int32)">
+            <summary>
+            constructor
+            </summary>
+            <param name="id">input value</param>
+        </member>
+        <member name="P:Demo.TestA.tick">
+            <summary>
+            inherited value
+            </summary>
+        </member>
+        <member name="M:Demo.TestA.DoWork">
+            <summary>
+            a work
+            </summary>
+            <returns>back message</returns>
+        </member>
+        <member name="M:Demo.TestA.IsTest(Demo.subns.TestStruct)">
+            <summary>
+            test message
+            </summary>
+            <param name="value">a struct</param>
+            <returns>is it ok</returns>
+        </member>
+        <member name="T:Demo.testns.MyClass">
+            <summary>
+            a class
+            </summary>
+        </member>
+        <member name="F:Demo.testns.MyClass.testvalue">
+            <summary>
+            a testvalue
+            </summary>
+        </member>
+        <member name="M:Demo.testns.MyClass.#ctor">
+            <summary>
+            constractor
+            </summary>
+        </member>
+    </members>
+</doc>

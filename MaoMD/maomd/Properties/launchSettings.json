@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "maomd": {
+      "commandName": "Project",
+      "commandLineArgs": "demo"
+    }
+  }
+}

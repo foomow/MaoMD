@@ -10,11 +10,19 @@ namespace maomd
             string dllFile = "";
             string xmlFile = "";
             string outputDir = "";
-            if (args.Length == 1)
+            if (args.Length > 0)
             {
-
+                dllFile = args[0];
             }
-            using (DocMaker docMaker = new DocMaker(dllFile,xmlFile,outputDir))
+            if (args.Length > 1)
+            {
+                xmlFile = args[1];
+            }
+            if (args.Length > 2)
+            {
+                outputDir = args[2];
+            }
+            using (DocMaker docMaker = new DocMaker(dllFile, xmlFile,  outputDir))
             {
                 docMaker.Make();
             };
