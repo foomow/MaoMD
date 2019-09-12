@@ -30,6 +30,18 @@
             Demo Class
             </summary>
         </member>
+        <member name="T:Demo.DemoClass.d_a">
+            <summary>
+            a delegate
+            </summary>
+            <param name="msg">msg parameter</param>
+            <returns>int value</returns>
+        </member>
+        <member name="F:Demo.DemoClass._id">
+            <summary>
+            id field
+            </summary>
+        </member>
         <member name="M:Demo.DemoClass.#ctor(System.Int32)">
             <summary>
             constructor
@@ -81,6 +93,25 @@
             saturday
             </summary>
         </member>
+        <member name="T:Demo.GClass`3">
+            <summary>
+            g class
+            </summary>
+            <typeparam name="T">tp 0</typeparam>
+            <typeparam name="T1">tp 1</typeparam>
+            <typeparam name="T2">tp 2</typeparam>
+        </member>
+        <member name="F:Demo.GClass`3.q">
+            <summary>
+            a queue
+            </summary>
+        </member>
+        <member name="M:Demo.GClass`3.#ctor(System.Int32)">
+            <summary>
+            default ctor
+            </summary>
+            <param name="i">param i</param>
+        </member>
         <member name="T:Demo.NewClass">
             <summary>
             a new class,
@@ -108,6 +139,13 @@
             <summary>
             a property
             </summary>
+        </member>
+        <member name="M:Demo.NewClass.Afun">
+            <summary>
+            this is a function
+            </summary>
+            <returns>return a string</returns>
+            <remarks>some remarks</remarks>
         </member>
         <member name="T:Demo.Date">
             <summary>
@@ -215,15 +253,49 @@
             TestA
             </summary>
         </member>
+        <member name="F:Demo.TestA.a">
+            <summary>
+            a gclass
+            </summary>
+        </member>
+        <member name="F:Demo.TestA.aaa">
+            <summary>
+            aaa class
+            </summary>
+        </member>
+        <member name="F:Demo.TestA.fooc">
+            <summary>
+            const fiele
+            </summary>
+            <remarks>haha</remarks>
+        </member>
+        <member name="F:Demo.TestA.foob">
+            <summary>
+            readonly fiele
+            </summary>
+            <remarks>
+            haha
+            </remarks>
+        </member>
+        <member name="F:Demo.TestA.foo">
+            <summary>
+            a foo value
+            </summary>
+        </member>
         <member name="M:Demo.TestA.#ctor(System.Int32)">
             <summary>
             constructor
             </summary>
             <param name="id">input value</param>
         </member>
-        <member name="P:Demo.TestA.tick">
+        <member name="P:Demo.TestA.Foo">
             <summary>
             inherited value
+            </summary>
+        </member>
+        <member name="P:Demo.TestA.tick">
+            <summary>
+            a implementation of tick
             </summary>
         </member>
         <member name="M:Demo.TestA.DoWork">
@@ -239,6 +311,50 @@
             <param name="value">a struct</param>
             <returns>is it ok</returns>
         </member>
+        <member name="M:Demo.TestA.set_Foo(Demo.WeekDay)">
+            <summary>
+            test set method
+            </summary>
+        </member>
+        <member name="M:Demo.TestA.DoJob(Demo.subns.SubClass,System.Int32,System.String)">
+            <summary>
+            static method
+            </summary>
+            <param name="sclass">p0</param>
+            <param name="a">p1</param>
+            <param name="b">p2</param>
+            <returns>a test calss</returns>
+        </member>
+        <member name="M:Demo.TestA.Afun">
+            <summary>
+            override method
+            </summary>
+            <returns>a string</returns>
+        </member>
+        <member name="M:Demo.TestA.pmethod">
+            <summary>
+            protected method
+            </summary>
+            <returns>an int</returns>
+        </member>
+        <member name="M:Demo.TestA.GetNameOfType``2(System.Boolean)">
+            <summary>
+            method with type parameters
+            </summary>
+            <typeparam name="T">the typeparameter</typeparam>
+            <typeparam name="T1">another typeparameter</typeparam>
+            <param name="fullname">test parameter</param>
+            <returns>string return value</returns>
+        </member>
+        <member name="M:Demo.testns.ClassS.toIn(System.String,System.Int32@,System.Int32@,System.Int32@)">
+            <summary>
+            sss
+            </summary>
+            <param name="str">sss</param>
+            <param name="f_r">rrr</param>
+            <param name="f_in">iii</param>
+            <param name="f_out">ooo</param>
+        </member>
         <member name="T:Demo.testns.MyClass">
             <summary>
             a class
@@ -247,6 +363,21 @@
         <member name="F:Demo.testns.MyClass.testvalue">
             <summary>
             a testvalue
+            </summary>
+        </member>
+        <member name="F:Demo.testns.MyClass.pubv">
+            <summary>
+            a public value
+            </summary>
+        </member>
+        <member name="F:Demo.testns.MyClass.priv">
+            <summary>
+            a private value
+            </summary>
+        </member>
+        <member name="F:Demo.testns.MyClass.intv">
+            <summary>
+            a internal value
             </summary>
         </member>
         <member name="M:Demo.testns.MyClass.#ctor">

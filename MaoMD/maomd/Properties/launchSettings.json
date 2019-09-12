@@ -2,7 +2,7 @@
   "profiles": {
     "maomd": {
       "commandName": "Project",
-      "commandLineArgs": "demo"
+      "commandLineArgs": "MatrixOne.WebSocket.Synchronizer"
     }
   }
 }

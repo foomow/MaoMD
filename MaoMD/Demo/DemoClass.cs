@@ -6,6 +6,16 @@ namespace Demo
     /// </summary>
     public class DemoClass
     {
+
+        /// <summary>
+        /// a delegate
+        /// </summary>
+        /// <param name="msg">msg parameter</param>
+        /// <returns>int value</returns>
+        delegate int d_a(string msg);
+        /// <summary>
+        /// id field
+        /// </summary>
         private int _id;
         /// <summary>
         /// constructor
@@ -19,6 +29,8 @@ namespace Demo
         /// property Id
         /// </summary>
         public int Id { get => _id; set=>_id=value; }
+
+        
     }
     /// <summary>
     /// an enum type

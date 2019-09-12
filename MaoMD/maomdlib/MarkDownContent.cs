@@ -44,13 +44,15 @@ namespace maomdlib
 
         public static MarkDownContent operator *(MarkDownContent a, string b)
         {
-            a = a + Environment.NewLine + Environment.NewLine;
-            return a+b;
+            if (b != "")
+                a = a + Environment.NewLine + Environment.NewLine;
+            return a + b;
         }
 
         public static MarkDownContent operator /(MarkDownContent a, string b)
         {
-            a = a + Environment.NewLine;
+            if (b != "")
+                a = a + Environment.NewLine;
             return a + b;
         }
 

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
@@ -82,9 +83,18 @@ namespace maomdlib
                 return;
             }
 
+            foreach (var item in _assembly.GetReferencedAssemblies())
+            {
+                _logger.Information("Assembly:" + item.Name);
+                Assembly.Load(item);
+            }
+
             _logger.Information("DocMaker 创建成功！");
+
+            
             _initiallized = true;
         }
+
         public MakeResult Make()
         {
             if (_initiallized)
@@ -151,14 +161,15 @@ namespace maomdlib
                 Content *= "## Structs:";
                 foreach (Type type in structs)
                 {
+                    MakeTypeFile(type);
                     Content *= "### " + MakeTypeShowName(type);
                     Content *= MakeTypeTags(type);
                     Content *= MakeTypeInheritance(type);
                     Content *= MakeTypeAttributes(type);
-                    Content *= ReadXmlDocTag(type, "summary");
+                    Content *= ReadXmlDocTag(MakeNodeName(type), "summary");
                     if (type.IsNested)
                     {
-                        Content *= "*nested in " + MakeLinkedName(type.DeclaringType, true) + "*";
+                        Content *= "*nested in " + MakedName(type.DeclaringType, true) + "*";
                     }
                 }
             }
@@ -170,14 +181,15 @@ namespace maomdlib
                 Content *= "## Interfaces:";
                 foreach (Type type in interfaces)
                 {
+                    MakeTypeFile(type);
                     Content *= "### " + MakeTypeShowName(type);
                     Content *= MakeTypeTags(type);
                     Content *= MakeTypeInheritance(type);
                     Content *= MakeTypeAttributes(type);
-                    Content *= ReadXmlDocTag(type, "summary");
+                    Content *= ReadXmlDocTag(MakeNodeName(type), "summary");
                     if (type.IsNested)
                     {
-                        Content *= "*nested in " + MakeLinkedName(type.DeclaringType, true) + "*";
+                        Content *= "*nested in " + MakedName(type.DeclaringType, true) + "*";
                     }
                 }
             }
@@ -194,10 +206,10 @@ namespace maomdlib
                     Content *= MakeTypeTags(type);
                     Content *= MakeTypeInheritance(type);
                     Content *= MakeTypeAttributes(type);
-                    Content *= ReadXmlDocTag(type, "summary");
+                    Content *= ReadXmlDocTag(MakeNodeName(type), "summary");
                     if (type.IsNested)
                     {
-                        Content += "*nested in " + MakeLinkedName(type.DeclaringType, true) + "*";
+                        Content += "*nested in " + MakedName(type.DeclaringType, true) + "*";
                     }
                 }
             }
@@ -209,14 +221,15 @@ namespace maomdlib
                 Content *= "## Enums:";
                 foreach (Type type in enums)
                 {
+                    MakeTypeFile(type);
                     Content *= "### " + MakeTypeShowName(type);
                     Content *= MakeTypeTags(type);
                     Content *= MakeTypeInheritance(type);
                     Content *= MakeTypeAttributes(type);
-                    Content *= ReadXmlDocTag(type, "summary");
+                    Content *= ReadXmlDocTag(MakeNodeName(type), "summary");
                     if (type.IsNested)
                     {
-                        Content *= "*nested in " + MakeLinkedName(type.DeclaringType, true) + "*";
+                        Content *= "*nested in " + MakedName(type.DeclaringType, true) + "*";
                     }
                 }
             }
@@ -240,25 +253,62 @@ namespace maomdlib
         private void MakeTypeFile(Type type)
         {
             MarkDownContent Content = new MarkDownContent();
-            Content *= "### " + MakeTypeShowName(type);
+            Content *= "# " + MakeTypeShowName(type);
             string root = _linkRoot;
             if (root == "") root = Environment.CurrentDirectory;
             Content *= "Namespace: [" + type.Namespace + "](" + root + "/" + _outputDir + "/" + type.Namespace.Replace(".", "/") + "/home.md" + ")";
             Content *= MakeTypeTags(type);
             Content *= MakeTypeInheritance(type);
+            Content *= "Usage: ";
+            Content *= "## `" + MakeTypeUsage(type) + "`";
             Content *= MakeTypeAttributes(type);
-            Content *= ReadXmlDocTag(type, "summary");
-            Content *= ReadXmlDocTag(type, "remarks");
-            Content *= ReadXmlDocTag(type, "seealso");
 
-            MemberInfo[] members = type.GetMembers();
+            Content *= MakeArgumentsTable(type.GetTypeInfo());
+            Content *= ReadXmlDocTag(MakeNodeName(type), "summary");
+            Content *= ReadXmlDocTag(MakeNodeName(type), "remarks");
+            Content *= ReadXmlDocTag(MakeNodeName(type), "seealso");
+
+            MemberInfo[] members = type.GetMembers(
+                BindingFlags.Instance
+                | BindingFlags.Static
+                | BindingFlags.Public
+                | BindingFlags.NonPublic
+                ).Where(x =>
+                {
+                    if (x.DeclaringType != type)
+                        return false;
+                    object[] attr = x.GetCustomAttributes(true).ToArray();
+                    if (attr != null && attr.FirstOrDefault(y => y is System.Runtime.CompilerServices.CompilerGeneratedAttribute) != default(object))
+                        return false;
+                    return true;
+                }).ToArray();
             MemberInfo[] types = members.Where(x => x.MemberType == MemberTypes.TypeInfo).ToArray();
             MemberInfo[] fields = members.Where(x => x.MemberType == MemberTypes.Field).ToArray();
             MemberInfo[] properties = members.Where(x => x.MemberType == MemberTypes.Property).ToArray();
-            MemberInfo[] methods = members.Where(x => x.MemberType == MemberTypes.Method).ToArray();
-            MemberInfo[] nestedtypes = members.Where(x => x.MemberType == MemberTypes.NestedType).ToArray();
+            MemberInfo[] methods = members.Where(x => x.MemberType == MemberTypes.Method && x.MemberType != MemberTypes.Constructor).ToArray();
             MemberInfo[] constructors = members.Where(x => x.MemberType == MemberTypes.Constructor).ToArray();
-            MemberInfo[] events = members.Where(x => x.MemberType == MemberTypes.Event).ToArray();
+
+            if (constructors.Length > 0)
+            {
+                Content *= "## Constructors:";
+                Content += MakeMemberContent(constructors);
+            }
+            if (fields.Length > 0)
+            {
+                Content *= "## Fields:";
+                Content += MakeMemberContent(fields);
+            }
+            if (properties.Length > 0)
+            {
+                Content *= "## Properties:";
+                Content += MakeMemberContent(properties);
+            }
+            if (methods.Length > 0)
+            {
+                Content *= "## Methods:";
+                Content += MakeMemberContent(methods);
+            }
+
 
             string pathname = "/" + type.Namespace.Replace(".", "/");
             string filename = pathname + "//" + MakeMDFileName(type);
@@ -294,11 +344,16 @@ namespace maomdlib
             }
             return name;
         }
-        private string MakeLinkedName(Type type, bool prefix = false)
+        private string MakedName(Type type, bool prefix = false, bool linked = true)
         {
             string ret = type.Name;
+            if (type.GetGenericArguments().Length > 0)
+            {
+                ret = ret.Split("`")[0];
+                ret += MakeGenericArgs(type);
+            }
             if (prefix) ret = type.Namespace + "." + ret;
-            if (type.Assembly == _assembly)
+            if (type.Assembly == _assembly && !type.IsGenericMethodParameter && !type.IsGenericTypeParameter && linked)
             {
                 ret = "[" + ret + "](" + MakeMDFilePath(type) + MakeMDFileName(type) + ")";
             }
@@ -306,7 +361,7 @@ namespace maomdlib
         }
         private string MakeInheritanceString(Type type)
         {
-            string ret = MakeLinkedName(type, true);
+            string ret = MakedName(type, true);
             if (type.BaseType != null)
             {
                 string bret = MakeInheritanceString(type.BaseType);
@@ -314,17 +369,142 @@ namespace maomdlib
             }
             return ret;
         }
-        private MarkDownContent ReadXmlDocTag(Type type, string tag)
+        private string MakeParametersList(MethodBase info, bool link = true, bool paramName = true)
+        {
+            string Content = "";
+            bool isExt = info.IsDefined(typeof(ExtensionAttribute), true);
+            ParameterInfo[] parameters = info.GetParameters();
+            foreach (ParameterInfo pinfo in parameters)
+            {
+                if (pinfo.Position > 0)
+                    Content += ",";
+                else
+                if (isExt)
+                    Content += "this ";
+                if (pinfo.IsOut)
+                    Content += "out ";
+                if (pinfo.IsIn)
+                    Content += "In ";
+
+                string formatedName = "";
+                if (link)
+                    formatedName = MakedName(pinfo.ParameterType);
+                else
+                    formatedName = pinfo.ParameterType.FullName;
+
+                if (pinfo.IsOut || pinfo.IsIn)
+                {
+                    formatedName=formatedName.TrimEnd('&');
+                }
+
+                if (formatedName.EndsWith('&'))
+                {
+                    formatedName="ref "+ formatedName.TrimEnd('&');
+                }
+
+                Content += formatedName;
+
+                if (paramName)
+                {
+                    Content += " " + pinfo.Name;
+                    if (pinfo.DefaultValue != null)
+                    {
+                        string valuestr = pinfo.DefaultValue.ToString();
+                        if (valuestr != "")
+                        {
+                            if (pinfo.DefaultValue.GetType() == typeof(string) || pinfo.DefaultValue.GetType() == typeof(String))
+                                valuestr = $"\"{valuestr}\"";
+                            Content += " = " + valuestr;
+                        }
+                    }
+                }
+            }
+            return Content;
+        }
+        private string MakeParametersListInNode(MethodBase info, bool link = true, bool paramName = true)
+        {
+            string Content = "";
+            bool isExt = info.IsDefined(typeof(ExtensionAttribute), true);
+            ParameterInfo[] parameters = info.GetParameters();
+            foreach (ParameterInfo pinfo in parameters)
+            {
+                if (pinfo.Position > 0)
+                    Content += ",";                
+
+                string formatedName = "";
+                if (link)
+                    formatedName = MakedName(pinfo.ParameterType);
+                else
+                    formatedName = pinfo.ParameterType.FullName;
+
+
+                formatedName = formatedName.Replace("&","@");
+
+                Content += formatedName;
+
+                if (paramName)
+                {
+                    Content += " " + pinfo.Name;
+                    string valuestr = pinfo.DefaultValue.ToString();
+                    if (valuestr != "")
+                    {
+                        if (pinfo.DefaultValue.GetType() == typeof(string) || pinfo.DefaultValue.GetType() == typeof(String))
+                            valuestr = $"\"{valuestr}\"";
+                        Content += " = " + valuestr;
+                    }
+                }
+            }
+            return Content;
+        }
+        private string MakeNodeName(object obj)
+        {
+            string ret = "";
+            if (obj is Type)
+            {
+                ret = "T:" + ((Type)obj).FullName;
+            }
+            if (obj is MethodBase)
+            {
+                ret = "M:" + ((MethodBase)obj).DeclaringType.FullName;
+                if (((MethodBase)obj).IsConstructor)
+                    ret += ".#ctor";
+                else
+                    ret += "." + ((MethodBase)obj).Name;
+                if (obj is MethodInfo)
+                {
+                    Type[] ptypes = ((MethodInfo)obj).GetGenericArguments();
+                    if (ptypes != null && ptypes.Length > 0)
+                        ret += "``" + ptypes.Length;
+                }
+                if (((MethodBase)obj).GetParameters().Length > 0)
+                    ret += "(" + MakeParametersListInNode((MethodBase)obj, false, false) + ")";
+            }
+            if (obj is FieldInfo)
+            {
+                ret = "F:" + ((FieldInfo)obj).DeclaringType.FullName;
+                ret += "." + ((FieldInfo)obj).Name;
+            }
+            if (obj is PropertyInfo)
+            {
+                ret = "P:" + ((PropertyInfo)obj).DeclaringType.FullName;
+                ret += "." + ((PropertyInfo)obj).Name;
+            }
+            return ret;
+        }
+        private MarkDownContent ReadXmlDocTag(string nodename, string tag, string name = "")
         {
             MarkDownContent Content = new MarkDownContent();
-            string typeChsr = "T";
-            XmlNode node = _xmlnodes.SelectSingleNode("member[@name = \"" + typeChsr + ":" + type.FullName + "\"]");
+            XmlNode node = _xmlnodes.SelectSingleNode("member[@name = \"" + nodename + "\"]");
+            string title = tag.Substring(0, 1).ToUpper() + tag.Substring(1);
+            if (name != "")
+                tag = tag + "[@name=\"" + name + "\"]";
             if (node != null && node.SelectSingleNode(tag) != null)
             {
-                Content += tag + ": ";
+
 
                 if (tag == "seealso")
                 {
+                    Content += title + ": ";
                     XmlNodeList nodes = node.SelectNodes(tag);
                     foreach (XmlNode n in nodes)
                     {
@@ -336,7 +516,7 @@ namespace maomdlib
                             {
                                 Type satype = _assembly.GetType(mname);
                                 if (satype != null)
-                                    Content *= " - " + MakeLinkedName(satype);
+                                    Content *= " - " + MakedName(satype);
                                 else
                                     Content *= " - " + satype;
                             }
@@ -345,8 +525,12 @@ namespace maomdlib
                 }
                 else
                 {
-                    Content *= ">";
-                    Content += node.SelectSingleNode(tag).InnerText;
+                    if (title != "Typeparam" && title != "Param" && title != "Returns")
+                    {
+                        Content += title + ": ";
+                        Content *= "> ";
+                    }
+                    Content += node.SelectSingleNode(tag).InnerText.Trim(' ').Trim('\t').Trim(' ').Trim('\t').Trim(Environment.NewLine.ToArray()).Trim(' ').Trim('\t').Trim(' ').Trim('\t');
                 }
             }
             return Content;
@@ -361,7 +545,7 @@ namespace maomdlib
         private MarkDownContent MakeTypeAttributes(Type type)
         {
             MarkDownContent Content = new MarkDownContent();
-            if (type.CustomAttributes.Count() > 0)
+            if (type.GetCustomAttributes(true).Length > 0)
             {
                 Content = new MarkDownContent("Attributes: ");
             }
@@ -369,7 +553,23 @@ namespace maomdlib
             foreach (var attr in type.GetCustomAttributes(true))
             {
                 if (!begin) Content += ", ";
-                Content += MakeLinkedName(attr.GetType(), true);
+                Content += MakedName(attr.GetType(), true);
+                begin = false;
+            }
+            return Content;
+        }
+        private MarkDownContent MakeMemberAttributes(MemberInfo member)
+        {
+            MarkDownContent Content = new MarkDownContent();
+            if (member.GetCustomAttributes(true).Length > 0)
+            {
+                Content = new MarkDownContent("Attributes: ");
+            }
+            bool begin = true;
+            foreach (var attr in member.GetCustomAttributes(true))
+            {
+                if (!begin) Content += ", ";
+                Content += MakedName(attr.GetType(), true);
                 begin = false;
             }
             return Content;
@@ -390,15 +590,263 @@ namespace maomdlib
         }
         private MarkDownContent MakeTypeShowName(Type type)
         {
-            MarkDownContent Content = new MarkDownContent();
-            if (type.IsSealed && !type.IsValueType) Content += "sealed";
-            if (type.IsAbstract && !type.IsInterface) Content += "abstract";
-            if (type.IsPublic) Content += " public";
-            if (type.IsClass) Content += " class";
-            if (type.IsInterface) Content += " interface";
-            if (type.IsEnum) Content += " enum";
+            MarkDownContent Content = new MarkDownContent(MakedName(type));
 
-            Content += " " + MakeLinkedName(type);
+            string tstr = "";
+            if (type.IsSealed && type.IsAbstract) tstr = " static";
+            if (type.IsAbstract && !type.IsInterface && tstr == "") Content += " abstract";
+            if (type.IsSealed && !type.IsValueType && type.BaseType != typeof(MulticastDelegate) && tstr == "") Content += " sealed";
+
+            Content += tstr;
+
+            if (type.IsClass)
+            {
+                if (type.BaseType == typeof(MulticastDelegate))
+                    Content += " Delegate";
+                else
+                    Content += " Class";
+            }
+            if (type.IsInterface) Content += " Interface";
+            if (type.IsEnum) Content += " Enum";
+            if (type.IsValueType && !type.IsEnum) Content += " Struct";
+            return Content;
+        }
+        private MarkDownContent MakeTypeUsage(Type type)
+        {
+            MarkDownContent Content = new MarkDownContent();
+            if (type.IsPublic) Content += "public ";
+            string tstr = "";
+            if (type.IsSealed && type.IsAbstract) tstr = "static ";
+            if (type.IsAbstract && !type.IsInterface && tstr == "") Content += "abstract ";
+            if (type.IsSealed && !type.IsValueType && type.BaseType != typeof(MulticastDelegate) && tstr == "") Content += "sealed ";
+
+            Content += tstr;
+
+            if (type.IsClass)
+            {
+                if (type.BaseType == typeof(MulticastDelegate))
+                    Content += "delegate ";
+                else
+                    Content += "class ";
+            }
+            if (type.IsInterface) Content += "interface ";
+            if (type.IsEnum) Content += "enum ";
+            if (type.IsValueType && !type.IsEnum) Content += "struct ";
+
+            if (type.GetGenericArguments().Length > 0)
+            {
+                string formatedName = type.Name;
+                formatedName = formatedName.Split("`")[0];
+                Content += formatedName + MakeGenericArgs(type);
+            }
+            else
+            {
+                Content += type.Name;
+            }
+            string appendstr = "";
+            if (type.IsEnum)
+                appendstr = "";
+            if (type.BaseType != null && type.BaseType.Assembly == _assembly)
+            {
+                if (appendstr == "") appendstr += " :";
+                appendstr += type.BaseType.Name;
+            }
+            Type[] intfs = type.GetInterfaces();
+            foreach (Type intf in intfs)
+            {
+                if (appendstr == "") appendstr += " :";
+                else
+                    appendstr += ", ";
+                appendstr += intf.Name;
+            }
+
+            if (appendstr != "") Content += appendstr;
+            return Content;
+        }
+        private MarkDownContent MakeMemberUsage(MemberInfo memberInfo)
+        {
+            MarkDownContent Content = new MarkDownContent();
+            if (memberInfo.MemberType == MemberTypes.Constructor)
+            {
+                ConstructorInfo info = (ConstructorInfo)memberInfo;
+                Content += info.DeclaringType.Name.Split("`")[0];
+                Content += " ( ";
+                Content += MakeParametersList(info);
+                Content += " ); ";
+            }
+            if (memberInfo.MemberType == MemberTypes.Method)
+            {
+                MethodInfo info = (MethodInfo)memberInfo;
+                if (!info.IsSpecialName)
+                {
+                    if (info.IsPublic) Content += "public ";
+                    if (info.IsPrivate) Content += "private ";
+                    if (info.IsAssembly) Content += "internal ";
+                    if (info.IsFamily) Content += "protected ";
+
+                    if (info.IsVirtual && info.GetBaseDefinition() == info) Content += "virtual ";
+                    if (info.GetBaseDefinition() != info) Content += "override ";
+                    if (info.IsFinal) Content += "final ";
+                    if (info.IsAbstract) Content += "abstract ";
+
+                    if (info.IsStatic) Content += "static ";
+
+                    if (info.ReturnType != null) Content += MakedName(info.ReturnType) + " ";
+
+                    Content += info.Name;
+                    Content += MakeGenericArgs(info);
+
+                    Content += " ( ";
+                    Content += MakeParametersList(info);
+                    Content += " ); ";
+                }
+            }
+            if (memberInfo.MemberType == MemberTypes.Field)
+            {
+                FieldInfo info = (FieldInfo)memberInfo;
+                if (!info.IsSpecialName)
+                {
+                    if (info.IsPublic) Content += "public ";
+                    if (info.IsPrivate) Content += "private ";
+                    if (info.IsAssembly) Content += "internal ";
+                    if (info.IsFamily) Content += "protected ";
+                    if (info.IsInitOnly) Content += "readonly ";
+                    if (info.IsLiteral) Content += "const ";
+
+                    if (info.IsStatic) Content += "static ";
+
+                    Content += MakedName(info.FieldType) + " ";
+
+                    Content += info.Name;
+                }
+            }
+            if (memberInfo.MemberType == MemberTypes.Property)
+            {
+                PropertyInfo info = (PropertyInfo)memberInfo;
+                if (!info.IsSpecialName)
+                {
+                    Content += MakedName(info.PropertyType) + " ";
+                    Content += info.Name;
+                    Content += "{ ";
+                    MethodInfo[] accessors = info.GetAccessors();
+                    foreach (MethodInfo method in accessors)
+                    {
+                        Content += method.Name.Substring(0, 3) + "; ";
+                    }
+                    Content += "}";
+                }
+            }
+            return Content;
+        }
+        private string MakeGenericArgs(MethodInfo info)
+        {
+            string Content = "";
+            Type[] ptypes = info.GetGenericArguments();
+            if (ptypes.Length > 0)
+            {
+                Content += "< ";
+                bool begin = true;
+                foreach (Type ptype in ptypes)
+                {
+                    if (!begin) Content += ", ";
+                    Content += MakedName(ptype);
+                    begin = false;
+                }
+                Content += " >";
+            }
+            return Content;
+        }
+        private string MakeGenericArgs(Type info)
+        {
+            string Content = "";
+            Type[] ptypes = info.GetGenericArguments();
+            if (ptypes.Length > 0)
+            {
+                Content += "< ";
+                bool begin = true;
+                foreach (Type ptype in ptypes)
+                {
+                    if (!begin) Content += ", ";
+                    Content += MakedName(ptype);
+                    begin = false;
+                }
+                Content += " >";
+            }
+            return Content;
+        }
+        private MarkDownContent MakeMemberContent(MemberInfo[] members)
+        {
+            MarkDownContent Content = new MarkDownContent();
+            foreach (MemberInfo info in members)
+            {
+                MarkDownContent membercontent = MakeMemberUsage(info);
+                if (membercontent != "")
+                {
+                    Content *= "### " + MakeMemberUsage(info);
+                    Content *= MakeMemberAttributes(info);
+                    Content *= ReadXmlDocTag(MakeNodeName(info), "summary");
+                    if (info is MethodInfo || info is ConstructorInfo)
+                    {
+                        Content *= MakeParamsTable((MethodBase)info);
+                        if (info is MethodInfo)
+                            Content *= "Returns: " + ReadXmlDocTag(MakeNodeName(info), "returns");
+                    }
+                    Content *= ReadXmlDocTag(MakeNodeName(info), "remarks");
+                    Content *= ReadXmlDocTag(MakeNodeName(info), "seealso");
+                    Content *= "---";
+                }
+            }
+            return Content;
+        }
+        private MarkDownContent MakeParamsTable(MethodBase method)
+        {
+            MarkDownContent Content = new MarkDownContent();
+            if (method.GetParameters().Length > 0)
+            {
+                Content += "Parameters:";
+                Content *= "| Name | Type | Summary |";
+                Content /= "| --- | --- | --- |";
+                foreach (ParameterInfo pinfo in method.GetParameters())
+                {
+                    string desc = "*无*";
+                    string summary = ReadXmlDocTag(MakeNodeName(method), "param", pinfo.Name);
+                    if (summary != "") desc = summary;
+                    Content /= "| " + pinfo.Name + " | " + MakedName(pinfo.ParameterType) + " | " + desc + " |";
+                }
+            }
+            if (method is MethodInfo && ((MethodInfo)method).GetGenericArguments().Length > 0)
+            {
+                if (Content != "") Content++;
+                Content += "Arguments:";
+                Content *= "| Name | Summary |";
+                Content /= "| --- | --- |";
+                foreach (Type pinfo in ((MethodInfo)method).GetGenericArguments())
+                {
+                    string desc = "*无*";
+                    string summary = ReadXmlDocTag(MakeNodeName(method), "typeparam", pinfo.Name);
+                    if (summary != "") desc = summary;
+                    Content /= "| " + pinfo.Name + " | " + desc + " |";
+                }
+            }
+            return Content;
+        }
+        private MarkDownContent MakeArgumentsTable(TypeInfo ctor)
+        {
+            MarkDownContent Content = new MarkDownContent();
+            if (ctor.GetGenericArguments().Length > 0)
+            {
+                if (Content != "") Content++;
+                Content += "Arguments:";
+                Content *= "| Name | Summary |";
+                Content /= "| --- | --- |";
+                foreach (Type pinfo in ctor.GetGenericArguments())
+                {
+                    string desc = "*无*";
+                    string summary = ReadXmlDocTag(MakeNodeName(ctor), "typeparam", pinfo.Name);
+                    if (summary != "") desc = summary;
+                    Content /= "| " + pinfo.Name + " | " + desc + " |";
+                }
+            }
             return Content;
         }
         private bool CheckFiles()

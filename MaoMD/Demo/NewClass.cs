@@ -34,6 +34,14 @@ namespace Demo
         /// a property
         /// </summary>
         public int Id { get => _id; set => _id = value; }
+        /// <summary>
+        /// this is a function
+        /// </summary>
+        /// <returns>return a string</returns>
+        /// <remarks>some remarks</remarks>
+        internal virtual string Afun() {
+            return "";
+        }
     }
     /// <summary>
     /// a struct

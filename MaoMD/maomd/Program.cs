@@ -22,10 +22,11 @@ namespace maomd
             {
                 outputDir = args[2];
             }
-            using (DocMaker docMaker = new DocMaker(dllFile, xmlFile,  outputDir))
+            
+            using (DocMaker docMaker = new DocMaker(dllFile, xmlFile, outputDir))
             {
                 docMaker.Make();
             };
-        }
+        }        
     }
 }

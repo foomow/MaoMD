@@ -15,10 +15,22 @@ namespace Demo.testns
         /// </summary>
         TestStruct testvalue;
         /// <summary>
+        /// a public value
+        /// </summary>
+        public int pubv;
+        /// <summary>
+        /// a private value
+        /// </summary>
+        private int priv;
+        /// <summary>
+        /// a internal value
+        /// </summary>
+        internal int intv;
+        /// <summary>
         /// constractor
         /// </summary>
         public MyClass()
         {
         }
-    }
+    }        
 }

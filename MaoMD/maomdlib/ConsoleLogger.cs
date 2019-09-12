@@ -29,8 +29,8 @@ namespace maomdlib
         }
         private void LogProcess()
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine("[Logger] Start");
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine("[" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff") + "][Logger] Start");
             Console.ResetColor();
             while (!_exit || _messagePool.Count > 0)
             {
@@ -70,8 +70,8 @@ namespace maomdlib
                 }
                 Thread.Sleep(10);
             }
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine("[Logger] Stop");
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine("[" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss: ffff") + "][Logger] Stop");
             Console.ResetColor();
         }
         public void Critical(string format, params object[] args)
