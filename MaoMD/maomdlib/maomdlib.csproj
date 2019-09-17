@@ -3,7 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <Authors>MaoDaShu</Authors>
-    <Product>MaoMD</Product>
+    <Product>MaoMDLib</Product>
+    <Description>The core library for MaoMD.</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
