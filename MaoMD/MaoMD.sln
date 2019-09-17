@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maomd", "maomd\maomd.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "maomdlib", "maomdlib\maomdlib.csproj", "{F6C56A57-7189-4AD8-8F43-C3C632930A68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{ED1DCCC1-6FCB-48F5-AF92-02464C84A367}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{F6C56A57-7189-4AD8-8F43-C3C632930A68}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6C56A57-7189-4AD8-8F43-C3C632930A68}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6C56A57-7189-4AD8-8F43-C3C632930A68}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ED1DCCC1-6FCB-48F5-AF92-02464C84A367}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED1DCCC1-6FCB-48F5-AF92-02464C84A367}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ED1DCCC1-6FCB-48F5-AF92-02464C84A367}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED1DCCC1-6FCB-48F5-AF92-02464C84A367}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

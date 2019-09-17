@@ -5,20 +5,43 @@ using System.Threading;
 
 namespace maomdlib
 {
+    /// <summary>
+    /// a logger for console
+    /// </summary>
     public class ConsoleLogger : ILogger
     {
+        /// <summary>
+        /// a struct for messages
+        /// </summary>
         private struct MESSAGE
         {
             public LogLevel level;
             public string message;
         }
-        private Queue<MESSAGE> _messagePool;
+        /// <summary>
+        /// message queue
+        /// </summary>
+        private readonly Queue<MESSAGE> _messagePool;
+        /// <summary>
+        /// exit trigger
+        /// </summary>
         private bool _exit;
+        /// <summary>
+        /// the thread for logging
+        /// </summary>
         private Thread _logThread;
+        /// <summary>
+        /// the minimize level for logging
+        /// </summary>
         private LogLevel _minLogLevel;
+        /// <summary>
+        /// the minimize level for logging
+        /// </summary>
         public LogLevel MinLogLevel { get => _minLogLevel; set => _minLogLevel = value; }
-        LogLevel ILogger.MinLogLevel { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="minLogLevel">the minimize level for logging</param>
         public ConsoleLogger(LogLevel minLogLevel = LogLevel.Trace)
         {
             _exit = false;
@@ -27,6 +50,9 @@ namespace maomdlib
             _logThread = new Thread(new ThreadStart(LogProcess));
             _logThread.Start();
         }
+        /// <summary>
+        /// the thread for logging
+        /// </summary>
         private void LogProcess()
         {
             Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -74,42 +100,71 @@ namespace maomdlib
             Console.WriteLine("[" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss: ffff") + "][Logger] Stop");
             Console.ResetColor();
         }
+        /// <summary>
+        /// log logic for critical
+        /// </summary>
+        /// <param name="format">format</param>
+        /// <param name="args">args</param>
         public void Critical(string format, params object[] args)
         {
             string msg = string.Format(format, args);
             AddLog(LogLevel.Critical, msg);
         }
-
+        /// <summary>
+        /// log logic for Debug
+        /// </summary>
+        /// <param name="format">format</param>
+        /// <param name="args">args</param>
         public void Debug(string format, params object[] args)
         {
             string msg = string.Format(format, args);
             AddLog(LogLevel.Debug, msg);
         }
-
+        /// <summary>
+        /// log logic for this log level
+        /// </summary>
+        /// <param name="format">format</param>
+        /// <param name="args">args</param>
         public void Error(string format, params object[] args)
         {
             string msg = string.Format(format, args);
             AddLog(LogLevel.Error, msg);
         }
-
+        /// <summary>
+        /// log logic for this log level
+        /// </summary>
+        /// <param name="format">format</param>
+        /// <param name="args">args</param>
         public void Information(string format, params object[] args)
         {
             string msg = string.Format(format, args);
             AddLog(LogLevel.Information, msg);
         }
-
+        /// <summary>
+        /// log logic for this log level
+        /// </summary>
+        /// <param name="format">format</param>
+        /// <param name="args">args</param>
         public void Trace(string format, params object[] args)
         {
             string msg = string.Format(format, args);
             AddLog(LogLevel.Trace, msg);
         }
-
+        /// <summary>
+        /// log logic for this log level
+        /// </summary>
+        /// <param name="format">format</param>
+        /// <param name="args">args</param>
         public void Warning(string format, params object[] args)
         {
             string msg = string.Format(format, args);
             AddLog(LogLevel.Warning, msg);
         }
-
+       /// <summary>
+       /// add log to queue
+       /// </summary>
+       /// <param name="level">the level</param>
+       /// <param name="msg">message</param>
         private void AddLog(LogLevel level, string msg)
         {
             string date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:ffff");
@@ -125,8 +180,14 @@ namespace maomdlib
         }
 
         #region IDisposable Support
+        /// <summary>
+        /// To detect redundant calls
+        /// </summary>
         private bool disposedValue = false; // To detect redundant calls
-
+        /// <summary>
+        /// dispose method
+        /// </summary>
+        /// <param name="disposing">redundant detector</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -152,6 +213,9 @@ namespace maomdlib
         // }
 
         // This code added to correctly implement the disposable pattern.
+        /// <summary>
+        /// deconstructor
+        /// </summary>
         void IDisposable.Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.

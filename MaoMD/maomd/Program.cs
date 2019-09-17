@@ -10,6 +10,7 @@ namespace maomd
             string dllFile = "";
             string xmlFile = "";
             string outputDir = "";
+            string linkroot = "";
             if (args.Length > 0)
             {
                 dllFile = args[0];
@@ -22,8 +23,12 @@ namespace maomd
             {
                 outputDir = args[2];
             }
-            
-            using (DocMaker docMaker = new DocMaker(dllFile, xmlFile, outputDir))
+            if (args.Length > 3)
+            {
+                linkroot = args[3];
+            }
+
+            using (DocMaker docMaker = new DocMaker(dllFile, xmlFile, outputDir, true))
             {
                 docMaker.Make();
             };
