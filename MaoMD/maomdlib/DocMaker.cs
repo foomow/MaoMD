@@ -310,7 +310,7 @@ namespace maomdlib
                 else
                 {
                     File.WriteAllText(_outputDir + "/" + ns.Replace(".", "-") + "-home.md", Content);
-                    link = ns.Replace(".", "-") + "-home.md";
+                    link = ns.Replace(".", "-") + "-home";
                 }
             }
             catch (Exception e)
@@ -333,7 +333,7 @@ namespace maomdlib
             if (!_isNoPath)
                 Content *= "Namespace: [" + type.Namespace + "](" + root + "/" + _outputDir + "/" + type.Namespace.Replace(".", "/") + "/home.md" + ")";
             else
-                Content *= "Namespace: [" + type.Namespace + "](" + root + "/" + _outputDir + "/" + type.Namespace.Replace(".", "/") + "-home.md" + ")";
+                Content *= "Namespace: [" + type.Namespace + "](" + root + "/" + _outputDir + "/" + type.Namespace.Replace(".", "/") + "-home" + ")";
             Content *= MakeTypeTags(type);
             Content *= MakeTypeInheritance(type);
             Content *= "Usage: ";
@@ -476,7 +476,8 @@ namespace maomdlib
                 }
                 else
                 {
-                    ret = "[" + ret + "](" + MakeMDFileName(type) + ")";
+                    string linkname = MakeMDFileName(type).Replace(".md","");
+                    ret = "[" + ret + "](" + linkname + ")";
                 }
             }
             return ret;
