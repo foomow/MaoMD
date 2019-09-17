@@ -5,7 +5,7 @@ Make all .md documents automatic.
 
 ## usage:
 
-1 MaoMD [dllFile] [[xmlFile] [[outputDir] [[isNoPath] [[linkRoot] [logger]]]]]
+1 MaoMD [-h||?] || [dllFile [xmlFile [outputDir [isNoPath [linkRoot [logger]]]]]]
 
 2 'MaoMD -h' for help.
 
@@ -19,7 +19,7 @@ __outputDir__: The destination directory to put all .md files.
 
 __linkRoot__: The root path of all .md file. Use on systems supported path.
 
-__logger__: The Logger, use default or make your own instance to logging.
+__isNoPath__: Whether the destination system support path or not
 
 __no parameters: make documents with myself as a demo.__
 
