@@ -1,7 +1,8 @@
 {
   "profiles": {
     "maomd": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "MatrixOne.SecurityCenter.Services"
     }
   }
 }

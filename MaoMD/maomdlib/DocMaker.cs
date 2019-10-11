@@ -255,8 +255,10 @@ namespace maomdlib
                     }
                 }
             }
-
-            Type[] classes = types.Where(x => x.IsClass && !x.Name.StartsWith("<>c")).ToArray();
+            
+           Type[] classes = types.Where(x => x.IsClass && !x.Name.StartsWith("<")&&!x.GetCustomAttributes().Any((y)=> {
+               return y.GetType() == typeof(CompilerGeneratedAttribute);
+           })).ToArray();
             if (classes.Length > 0)
             {
                 Content *= "---";
@@ -448,7 +450,10 @@ namespace maomdlib
             }
             else
             {
-                name = type.FullName.Replace(".", "-").Replace("+", "-") + ".md";
+                if (type.FullName == null)
+                    name = (type.Assembly.FullName+"-"+type.Name).Replace(".", "-").Replace("+", "-").Replace(">", "-").Replace("<", "-") + ".md";
+                else
+                    name = type.FullName.Replace(".", "-").Replace("+", "-").Replace(">", "-").Replace("<", "-") + ".md";
             }
             return name;
         }
@@ -476,7 +481,7 @@ namespace maomdlib
                 }
                 else
                 {
-                    string linkname = MakeMDFileName(type).Replace(".md","");
+                    string linkname = MakeMDFileName(type).Replace(".md", "");
                     ret = "[" + ret + "](" + linkname + ")";
                 }
             }
@@ -581,6 +586,7 @@ namespace maomdlib
                 else
                     formatedName = pinfo.ParameterType.FullName;
 
+                if (formatedName == null) formatedName = "T";
 
                 formatedName = formatedName.Replace("&", "@");
 
