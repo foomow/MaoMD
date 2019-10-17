@@ -106,17 +106,17 @@ namespace maomdlib
                 return;
             }
 
-            _logger.Information("加载 xml 文件:{0}.xml", _xmlFile);
+            _logger.Information("loading .xml file:{0}.xml", _xmlFile);
             try
             {
                 XmlDocument XmlDoc = new XmlDocument();
                 XmlDoc.Load(_xmlFile + ".xml");
                 _xmlnodes = XmlDoc.SelectSingleNode("doc/members");
-                _logger.Information("加载 xml 文件成功:{0}.xml", _xmlFile);
+                _logger.Information("Load .xml successful:{0}.xml", _xmlFile);
             }
             catch (Exception e)
             {
-                _logger.Error("加载 xml 文件失败:{0}.xml\r\n{1}", _xmlFile, e.Message);
+                _logger.Error("Failed when load .xml :{0}.xml\r\n{1}", _xmlFile, e.Message);
                 return;
             }
 
@@ -133,14 +133,14 @@ namespace maomdlib
                     }
                     catch (Exception e)
                     {
-                        _logger.Error("程序集加载失败：" + item.Name + ".dll");
-                        _logger.Error("信息：" + e.Message);
+                        _logger.Error("Can't find assembly:" + item.Name + ".dll");
+                        _logger.Error("Message:" + e.Message);
                         return;
                     }
                 }
             }
 
-            _logger.Information("DocMaker 创建成功！");
+            _logger.Information("DocMaker success!");
 
             _initiallized = true;
         }

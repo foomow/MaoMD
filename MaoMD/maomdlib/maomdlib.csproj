@@ -5,10 +5,23 @@
     <Authors>MaoDaShu</Authors>
     <Product>MaoMDLib</Product>
     <Description>The core library for MaoMD.</Description>
+    <Version>1.0.1</Version>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/foomow/MaoMD</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/foomow/MaoMD.git</RepositoryUrl>
+    <RepositoryType>HTTPS</RepositoryType>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>maomdlib.xml</DocumentationFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
