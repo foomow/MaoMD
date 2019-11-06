@@ -16,6 +16,7 @@ Make all .md documents automatic…</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ApplicationIcon>maolib.ico</ApplicationIcon>
     <Company>MaoLib</Company>
+    <PackageIconUrl>https://raw.githubusercontent.com/foomow/MaoMD/master/MaoMD/maomdlib/maolib.ico</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
