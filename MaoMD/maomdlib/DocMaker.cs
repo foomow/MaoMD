@@ -74,35 +74,35 @@ namespace maomdlib
 
             if (!CheckFiles())
             {
-                _logger.Information("文档生成失败。");
+                _logger.Information("can't find dll or xml file.");
                 return;
             };
             if (!Directory.Exists(_outputDir))
             {
-                _logger.Information("创建目标目录");
+                _logger.Information("create output directory");
                 Directory.CreateDirectory(_outputDir);
             }
             else
             {
-                _logger.Information("清空目标目录");
+                _logger.Information("clear directory");
                 if (CleanDir(_outputDir))
-                    _logger.Information("清空目录 {0} 成功！", _outputDir);
+                    _logger.Information("directory {0} cleared！", _outputDir);
                 else
                 {
-                    _logger.Information("清空目录 {0} 失败！", _outputDir);
+                    _logger.Information("directory {0} cleared！", _outputDir);
                     return;
                 }
             }
 
-            _logger.Information("加载 dll 文件:{0}.dll", _dllFile);
+            _logger.Information("open dll :{0}.dll", _dllFile);
             try
             {
                 _assembly = Assembly.LoadFrom(_dllFile + ".dll");
-                _logger.Information("加载 dll 文件成功:{0}.dll", _dllFile);
+                _logger.Information("open dll successed:{0}.dll", _dllFile);
             }
             catch (Exception e)
             {
-                _logger.Error("加载 dll 文件失败:{0}.dll\r\n{1}", _dllFile, e.Message);
+                _logger.Error("open dll failed:{0}.dll\r\n{1}", _dllFile, e.Message);
                 return;
             }
 
@@ -153,14 +153,14 @@ namespace maomdlib
             if (_initiallized)
             {
                 MakeRootHome();
-                _logger.Information("执行成功！");
-                return new MakeResult(0, "成功");
+                _logger.Information("done");
+                return new MakeResult(0, "success");
             }
             else
             {
-                _logger.Information("失败，DocMaker 对象初始化异常！");
+                _logger.Information("failed, DocMaker initiallze failed！");
                 this.Dispose(true);
-                return new MakeResult(-1, "失败");
+                return new MakeResult(-1, "failed");
             }
 
         }
@@ -179,13 +179,13 @@ namespace maomdlib
 
             string[] NameSpaces = _assembly.GetTypes().Select(x => x.Namespace).Distinct().OrderBy(x => x).ToArray();
 
-            Content *= "| Namespace | 说明 |";
+            Content *= "| Namespace | description |";
             Content /= "| --- | --- |";
             foreach (string ns in NameSpaces)
             {
                 if (ns != null)
                 {
-                    Content /= "| [" + ns + "](" + MakeNameSpaceHome(ns) + ") | **请补充** |";
+                    Content /= "| [" + ns + "](" + MakeNameSpaceHome(ns) + ") | **To be added** |";
                 }
             }
 
@@ -196,7 +196,7 @@ namespace maomdlib
             }
             catch (Exception e)
             {
-                _logger.Error("文件写入失败:{0}\r\n{1}", filename, e.Message);
+                _logger.Error("Failed to write file:{0}\r\n{1}", filename, e.Message);
                 return false;
             }
             return true;
@@ -255,10 +255,11 @@ namespace maomdlib
                     }
                 }
             }
-            
-           Type[] classes = types.Where(x => x.IsClass && !x.Name.StartsWith("<")&&!x.GetCustomAttributes().Any((y)=> {
-               return y.GetType() == typeof(CompilerGeneratedAttribute);
-           })).ToArray();
+
+            Type[] classes = types.Where(x => x.IsClass && !x.Name.StartsWith("<") && !x.GetCustomAttributes().Any((y) =>
+            {
+                return y.GetType() == typeof(CompilerGeneratedAttribute);
+            })).ToArray();
             if (classes.Length > 0)
             {
                 Content *= "---";
@@ -317,7 +318,7 @@ namespace maomdlib
             }
             catch (Exception e)
             {
-                _logger.Error("文件写入失败:{0}\r\n{1}", filename, e.Message);
+                _logger.Error("Failed to write file:{0}\r\n{1}", filename, e.Message);
                 return "";
             }
             return link;
@@ -405,7 +406,7 @@ namespace maomdlib
             }
             catch (Exception e)
             {
-                _logger.Error("文件写入失败:{0}\r\n{1}", filename, e.Message);
+                _logger.Error("Failed to write file:{0}\r\n{1}", filename, e.Message);
             }
         }
         /// <summary>
@@ -451,7 +452,7 @@ namespace maomdlib
             else
             {
                 if (type.FullName == null)
-                    name = (type.Assembly.FullName+"-"+type.Name).Replace(".", "-").Replace("+", "-").Replace(">", "-").Replace("<", "-") + ".md";
+                    name = (type.Assembly.FullName + "-" + type.Name).Replace(".", "-").Replace("+", "-").Replace(">", "-").Replace("<", "-") + ".md";
                 else
                     name = type.FullName.Replace(".", "-").Replace("+", "-").Replace(">", "-").Replace("<", "-") + ".md";
             }
@@ -1063,7 +1064,7 @@ namespace maomdlib
                 Content /= "| --- | --- |";
                 foreach (Type pinfo in ctor.GetGenericArguments())
                 {
-                    string desc = "*无*";
+                    string desc = "*none*";
                     string summary = ReadXmlDocTag(MakeNodeName(ctor), "typeparam", pinfo.Name);
                     if (summary != "") desc = summary;
                     Content /= "| " + pinfo.Name + " | " + desc + " |";
@@ -1079,12 +1080,12 @@ namespace maomdlib
         {
             if (!File.Exists(_dllFile + ".dll"))
             {
-                _logger.Error(_dllFile + ".dll 文件不存在");
+                _logger.Error(_dllFile + ".dll not exist");
                 return false;
             }
             if (!File.Exists(_xmlFile + ".xml"))
             {
-                _logger.Error("xml 文件不存在");
+                _logger.Error("xml not exist");
                 return false;
             }
             return true;
@@ -1107,7 +1108,7 @@ namespace maomdlib
                     }
                     catch (Exception e)
                     {
-                        _logger.Error("删除文件 {0} 时出错：{1}", file, e.Message);
+                        _logger.Error("Error occured when delete {0} :{1}", file, e.Message);
                         return false;
                     }
                 }
@@ -1122,7 +1123,7 @@ namespace maomdlib
                         }
                         catch (Exception e)
                         {
-                            _logger.Error("删除目录 {0} 时出错：{1}", directory, e.Message);
+                            _logger.Error("Error occured when delete {0} :{1}", directory, e.Message);
                             return false;
                         }
                     }
