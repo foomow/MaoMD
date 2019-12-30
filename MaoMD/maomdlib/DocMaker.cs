@@ -121,28 +121,40 @@ namespace maomdlib
             }
 
             Assembly[] allass = AppDomain.CurrentDomain.GetAssemblies();
-
-            foreach (var item in _assembly.GetReferencedAssemblies())
+            bool isAssembliesReady = true;
+            var referrencedAssemblies = _assembly.GetReferencedAssemblies();
+            foreach (var item in referrencedAssemblies)
             {
                 _logger.Information("Assembly:" + item.Name);
                 if (allass.FirstOrDefault(x => x.FullName == item.FullName) == default)
                 {
                     try
                     {
-                        Assembly.LoadFrom(item.Name + ".dll");
+                        Assembly.Load(item.FullName);
+                        _logger.Information(item.FullName + " loaded.");
                     }
                     catch (Exception e)
                     {
-                        _logger.Error("Can't find assembly:" + item.Name + ".dll");
+                        _logger.Error("Can't find assembly:" + item.FullName + ".");
                         _logger.Error("Message:" + e.Message);
-                        return;
+                        isAssembliesReady = false;
                     }
                 }
+                else
+                {
+                    _logger.Information(item.Name + " exists.");
+                }
             }
+            if (isAssembliesReady)
+            {
+                _logger.Information("DocMaker success!");
+                _initiallized = true;
+            }
+            else
+            {
+                _logger.Information("DocMaker failed!");
 
-            _logger.Information("DocMaker success!");
-
-            _initiallized = true;
+            }
         }
         /// <summary>
         /// method to start make documents
